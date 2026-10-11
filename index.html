@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+  </style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p2">&lt;!DOCTYPE html&gt;</p>
+<p class="p2">&lt;html lang="en"&gt;</p>
+<p class="p2">&lt;head&gt;</p>
+<p class="p2">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
+<p class="p2">&lt;title&gt;Broken Calculator Lab&lt;/title&gt;</p>
+<p class="p2">&lt;style&gt;</p>
+<p class="p2">:root {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--navy:#172b4d; --blue:#315efb; --teal:#087f8c;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--orange:#f5a742; --paper:#f5f7fb; --muted:#68758b;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--line:#dfe5ef; --green:#18794e;</p>
+<p class="p2">}</p>
+<p class="p2">* { box-sizing:border-box }</p>
+<p class="p2">body {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin:0; background:var(--paper); color:var(--navy);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-family:system-ui,-apple-system,"Segoe UI",sans-serif;</p>
+<p class="p2">}</p>
+<p class="p2">button,input { font:inherit }</p>
+<p class="p2">button { cursor:pointer }</p>
+<p class="p2">header {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:var(--navy); color:white; padding:25px max(20px,calc((100% - 1100px)/2));</p>
+<p class="p2">}</p>
+<p class="p2">.brand { font-size:12px; letter-spacing:2px; color:#a9c3ff; font-weight:800 }</p>
+<p class="p2">header h1 { margin:7px 0; font-size:clamp(27px,4vw,38px) }</p>
+<p class="p2">header p { margin:0; color:#d6dfef; max-width:680px; line-height:1.6 }</p>
+<p class="p2">main { max-width:1100px; margin:auto; padding:24px 18px 50px }</p>
+<p class="p2">.tabs { display:flex; gap:9px; flex-wrap:wrap; margin-bottom:20px }</p>
+<p class="p2">.tab {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:white; border:1px solid var(--line); border-radius:12px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:11px 15px; color:var(--navy); font-weight:750;</p>
+<p class="p2">}</p>
+<p class="p2">.tab.active { background:var(--blue); border-color:var(--blue); color:white }</p>
+<p class="p2">.layout { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:20px }</p>
+<p class="p2">.panel {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:white; border:1px solid var(--line); border-radius:18px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:22px; box-shadow:0 5px 20px #172b4d08; min-width:0;</p>
+<p class="p2">}</p>
+<p class="p2">h2 { font-size:23px; margin:10px 0 5px }</p>
+<p class="p2">h3 { font-size:17px; margin-top:0 }</p>
+<p class="p2">.muted { color:var(--muted); line-height:1.55 }</p>
+<p class="p2">.pill {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display:inline-block; padding:5px 10px; background:#edf1ff;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color:#294bd0; border-radius:30px; font-size:12px; font-weight:800;</p>
+<p class="p2">}</p>
+<p class="p2">.screen {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:#e8f5ee; border:2px solid #c6e5d4; border-radius:13px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:18px; text-align:right; margin:20px 0 12px;</p>
+<p class="p2">}</p>
+<p class="p2">.screen-label { font-size:11px; color:#44705a; text-transform:uppercase; letter-spacing:1.5px }</p>
+<p class="p2">#display { font-size:clamp(35px,6vw,54px); font-weight:800; overflow-wrap:anywhere; color:#165a39 }</p>
+<p class="p2">.memory { display:flex; gap:10px; margin:12px 0 }</p>
+<p class="p2">.memory-card { flex:1; background:#f1f5ff; padding:12px; border-radius:10px; min-width:0 }</p>
+<p class="p2">.memory-card small { display:block; color:var(--muted); font-weight:700 }</p>
+<p class="p2">.memory-card strong { font-size:22px; overflow-wrap:anywhere }</p>
+<p class="p2">.buttons { display:flex; gap:12px; margin:16px 0 }</p>
+<p class="p2">.op {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>flex:1; min-width:0; min-height:92px; border:0; border-radius:14px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:#dce7ff; color:#173cba; font-weight:850;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size:25px; box-shadow:0 3px 0 #b7c8f3;</p>
+<p class="p2">}</p>
+<p class="p2">.op:nth-child(2) { background:#ffebcb; color:#854800; box-shadow:0 3px 0 #efd2a2 }</p>
+<p class="p2">.op:nth-child(3) { background:#d9f3eb; color:#086b58; box-shadow:0 3px 0 #b4e1d3 }</p>
+<p class="p2">.op small { display:block; font-size:13px; font-weight:650; margin-top:5px }</p>
+<p class="p2">.op:active { transform:translateY(2px); box-shadow:none }</p>
+<p class="p2">.controls { display:flex; gap:8px; flex-wrap:wrap }</p>
+<p class="p2">.secondary,.primary {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border:1px solid var(--line); border-radius:9px; padding:9px 13px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:white; color:var(--navy); font-weight:700;</p>
+<p class="p2">}</p>
+<p class="p2">.primary { background:var(--blue); color:white; border-color:var(--blue) }</p>
+<p class="p2">button:focus-visible,input:focus-visible {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>outline:3px solid #ffbd55; outline-offset:3px</p>
+<p class="p2">}</p>
+<p class="p2">.section-label { font-size:11px; text-transform:uppercase; letter-spacing:1.4px; font-weight:850; color:var(--muted) }</p>
+<p class="p2">.history { max-height:270px; overflow:auto; margin-top:12px }</p>
+<p class="p2">.step {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display:flex; justify-content:space-between; gap:10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-bottom:1px solid #edf0f5; padding:10px 0; font-size:14px;</p>
+<p class="p2">}</p>
+<p class="p2">.step strong { overflow-wrap:anywhere; text-align:right }</p>
+<p class="p2">.challenge { margin-top:18px; background:#fff6e8; border:1px solid #f7dfb9; border-radius:14px; padding:17px }</p>
+<p class="p2">.challenge h3 { margin-bottom:8px }</p>
+<p class="p2">.target-row { display:flex; gap:8px; margin-top:12px }</p>
+<p class="p2">.target-row input { width:100%; min-width:0; border:1px solid #d9c8a9; border-radius:9px; padding:10px }</p>
+<p class="p2">.result { margin-top:10px; font-weight:750; line-height:1.5 }</p>
+<p class="p2">.challenge-list { padding-left:22px; line-height:1.85 }</p>
+<p class="p2">details { margin-top:18px; background:white; border:1px solid var(--line); border-radius:14px; padding:16px }</p>
+<p class="p2">summary { font-weight:800; cursor:pointer }</p>
+<p class="p2">details p,details li { line-height:1.65 }</p>
+<p class="p2">.notice { background:#f0f7ff; padding:12px; border-radius:10px; font-size:13px; line-height:1.5; margin-top:14px }</p>
+<p class="p2">.footer { text-align:center; color:var(--muted); font-size:12px; margin-top:25px }</p>
+<p class="p2">@media(max-width:760px) {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>.layout { grid-template-columns:1fr }</p>
+<p class="p2"><span class="Apple-converted-space"> </span>.panel { padding:17px }</p>
+<p class="p2"><span class="Apple-converted-space"> </span>header { padding:22px 18px }</p>
+<p class="p2"><span class="Apple-converted-space"> </span>.tab { flex:1 }</p>
+<p class="p2">}</p>
+<p class="p2">&lt;/style&gt;</p>
+<p class="p2">&lt;/head&gt;</p>
+<p class="p2">&lt;body&gt;</p>
+<p class="p2">&lt;header&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div class="brand"&gt;MATH CIRCLE · INTERACTIVE EXPLORATION&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h1&gt;Broken Calculator Lab&lt;/h1&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;Five calculators. A handful of working buttons. Endless mathematical questions. Experiment, look for patterns, and prove your discoveries.&lt;/p&gt;</p>
+<p class="p2">&lt;/header&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;main&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div class="tabs" id="tabs" aria-label="Choose a calculator"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div class="layout"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;span class="pill" id="numberLabel"&gt;CALCULATOR 1&lt;/span&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;h2 id="calcTitle"&gt;Add 3 or 7&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;p class="muted" id="rules"&gt;&lt;/p&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="screen" aria-live="polite"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="screen-label"&gt;Current display&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div id="display"&gt;0&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="memory" id="memory" hidden&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="memory-card"&gt;&lt;small&gt;ALPHA · PREVIOUS DISPLAY&lt;/small&gt;&lt;strong id="alpha"&gt;0&lt;/strong&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="memory-card"&gt;&lt;small&gt;BETA · TWO STEPS BACK&lt;/small&gt;&lt;strong id="beta"&gt;0&lt;/strong&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="buttons" id="buttons"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="controls"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;button class="secondary" id="undo"&gt;↶ Undo&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;button class="secondary" id="reset"&gt;↺ Reset&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;button class="secondary" id="copy"&gt;Copy sequence&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="notice" id="status" aria-live="polite"&gt;Ready! Press a button to begin.&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div style="margin-top:23px"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="section-label"&gt;Button sequence &amp;amp; history&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;p class="muted"&gt;Each row shows the button pressed and the resulting display.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="history" id="history"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;aside&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="section-label"&gt;YOUR INVESTIGATION&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;h2&gt;Challenge board&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;p class="muted"&gt;Explore these questions. Record your ideas before checking the teacher notes.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;ol class="challenge-list" id="challenges"&gt;&lt;/ol&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="challenge"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;h3&gt;🎯 Reach a target&lt;/h3&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;p class="muted"&gt;Enter a number to check whether your current display matches it. Try to find the shortest sequence.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;div class="target-row"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span>&lt;input id="target" type="number" step="1" value="20" aria-label="Target number"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span>&lt;button class="primary" id="checkTarget"&gt;Check&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;div class="result" id="targetResult" aria-live="polite"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;details&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;summary&gt;Teacher notes &amp;amp; answer key&lt;/summary&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div id="teacherNotes"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/details&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;details&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;summary&gt;Ideas for extending the investigation&lt;/summary&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;ul&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;li&gt;Can you prove that your list of impossible numbers is complete?&lt;/li&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;li&gt;Can you find a shortest sequence without trying every sequence?&lt;/li&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;li&gt;What happens when the starting display changes?&lt;/li&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;li&gt;Which features determine whether every target is reachable?&lt;/li&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;li&gt;Can you design a calculator with infinitely many unreachable numbers?&lt;/li&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/ul&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/details&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/aside&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div class="footer"&gt;BROKEN CALCULATOR LAB · Experiment first. Conjecture second. Prove third.&lt;/div&gt;</p>
+<p class="p2">&lt;/main&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;script&gt;</p>
+<p class="p2">const calculators = [</p>
+<p class="p2"><span class="Apple-converted-space"> </span>{</p>
+<p class="p2"><span class="Apple-converted-space">  </span>title:"Add 3 or 7", start:0,</p>
+<p class="p2"><span class="Apple-converted-space">  </span>rules:"A adds 3; B adds 7. Start at 0.",</p>
+<p class="p2"><span class="Apple-converted-space">  </span>buttons:[["A","+3"],["B","+7"]],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>challenges:[</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Show that ABAB displays 20. What does ABBA display?",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Why can you never display 8?",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"What other positive integers are impossible?",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Find the largest positive integer you cannot display."</p>
+<p class="p2"><span class="Apple-converted-space">  </span>],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>teacher:`&lt;p&gt;Every display is 3a + 7b for nonnegative integers a,b. The largest unreachable positive integer is 11. The unreachable positive integers are 1, 2, 4, 5, 8, and 11.&lt;/p&gt;&lt;p&gt;ABAB and ABBA both display 20 because addition is commutative.&lt;/p&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>},</p>
+<p class="p2"><span class="Apple-converted-space"> </span>{</p>
+<p class="p2"><span class="Apple-converted-space">  </span>title:"Add 1 or multiply by 3", start:0,</p>
+<p class="p2"><span class="Apple-converted-space">  </span>rules:"A adds 1; B multiplies the current display by 3. Start at 0.",</p>
+<p class="p2"><span class="Apple-converted-space">  </span>buttons:[["A","+1"],["B","×3"]],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>challenges:[</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"What does ABBAAAA display?",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Find a shorter sequence with the same result.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Reach 102 using as few presses as possible.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Reach 511 using as few presses as possible."</p>
+<p class="p2"><span class="Apple-converted-space">  </span>],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>teacher:`&lt;p&gt;ABBAAAA displays 13. A shorter sequence is ABABA: 0 → 1 → 3 → 4 → 12 → 13.&lt;/p&gt;&lt;p&gt;To find shortest sequences, work backward: reverse A by subtracting 1, and reverse B by dividing by 3 when possible. For a rigorous minimum, use breadth-first search or prove no shorter sequence works.&lt;/p&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>},</p>
+<p class="p2"><span class="Apple-converted-space"> </span>{</p>
+<p class="p2"><span class="Apple-converted-space">  </span>title:"Add 6, divide by 2 or 3", start:0,</p>
+<p class="p2"><span class="Apple-converted-space">  </span>rules:"A adds 6. B divides by 2 if the display is even; otherwise it has no effect. C divides by 3 if divisible by 3; otherwise it has no effect. Start at 0.",</p>
+<p class="p2"><span class="Apple-converted-space">  </span>buttons:[["A","+6"],["B","÷2"],["C","÷3"]],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>challenges:[</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Can you display every positive integer? Start with small targets.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Find sequences that display 1, 2, and 3.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Find the smallest number of presses needed to display 99.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Explain why an ineffective division does not change the display."</p>
+<p class="p2"><span class="Apple-converted-space">  </span>],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>teacher:`&lt;p&gt;To reach any positive integer n, choose k so that 6k is divisible by n. Starting from 6k, use divisions by 2 and 3 to remove factors of 2 and 3; however, this alone does not remove other prime factors. A complete proof should use a construction that accounts for all factors. Students can investigate reachability and shortest routes to 99 experimentally.&lt;/p&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>},</p>
+<p class="p2"><span class="Apple-converted-space"> </span>{</p>
+<p class="p2"><span class="Apple-converted-space">  </span>title:"Add 5, add 7 or take a square root", start:0,</p>
+<p class="p2"><span class="Apple-converted-space">  </span>rules:"A adds 5; B adds 7. C takes the square root only when the display is a perfect square. Otherwise C has no effect. Start at 0.",</p>
+<p class="p2"><span class="Apple-converted-space">  </span>buttons:[["A","+5"],["B","+7"],["C","√"]],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>challenges:[</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Build the smallest positive targets, starting with 2.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Find a way to display 2, 3, 4, 5, and 6.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Can you display every integer greater than 1?",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Find a general construction and explain why it works."</p>
+<p class="p2"><span class="Apple-converted-space">  </span>],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>teacher:`&lt;p&gt;Students should build examples and seek a general construction using additions of 5 and 7 followed by square roots. Ask them to justify why the construction covers every target, rather than relying only on examples.&lt;/p&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>},</p>
+<p class="p2"><span class="Apple-converted-space"> </span>{</p>
+<p class="p2"><span class="Apple-converted-space">  </span>title:"The memory calculator", start:1, memory:true,</p>
+<p class="p2"><span class="Apple-converted-space">  </span>rules:"Start at 1, Alpha = 0, Beta = 0. A adds Alpha to the display. B adds Alpha + Beta. After each press, Alpha becomes the previous display and Beta becomes the previous Alpha.",</p>
+<p class="p2"><span class="Apple-converted-space">  </span>buttons:[["A","+ Alpha"],["B","+ Alpha + Beta"]],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>challenges:[</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"What happens after one, two, and three A presses?",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Write the first ten displayed values when you keep pressing A.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Write the first ten displayed values when you keep pressing B.",</p>
+<p class="p2"><span class="Apple-converted-space">   </span>"Can this calculator display every positive integer?"</p>
+<p class="p2"><span class="Apple-converted-space">  </span>],</p>
+<p class="p2"><span class="Apple-converted-space">  </span>teacher:`&lt;p&gt;Repeated A presses give 1, 1, 2, 3, 5, 8, 13, 21, 34, 55: the Fibonacci sequence, including the initial display.&lt;/p&gt;&lt;p&gt;Repeated B presses give 1, 2, 4, 7, 13, 24, 44, 81, 149, 274. Each new value is the sum of the previous three displayed values, with the initial memory values included according to the rules.&lt;/p&gt;&lt;p&gt;For arbitrary mixtures of A and B, investigate which positive integers are reachable and seek a proof.&lt;/p&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>}</p>
+<p class="p2">];</p>
+<p class="p1"><br></p>
+<p class="p2">let selected=0, value=0, alpha=0, beta=0;</p>
+<p class="p2">let history=[], states=[];</p>
+<p class="p2">const $=id=&gt;document.getElementById(id);</p>
+<p class="p2">const fmt=n=&gt;Number.isSafeInteger(n)?String(n):String(n);</p>
+<p class="p1"><br></p>
+<p class="p2">function snapshot() {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>return {value,alpha,beta,history:history.slice()};</p>
+<p class="p2">}</p>
+<p class="p2">function renderTabs() {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("tabs").innerHTML=calculators.map((c,i)=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>`&lt;button class="tab ${i===selected?"active":""}" data-index="${i}"&gt;Calculator ${i+1}&lt;/button&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>).join("");</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("tabs").querySelectorAll("button").forEach(b=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>b.addEventListener("click",()=&gt;choose(Number(b.dataset.index)))</p>
+<p class="p2"><span class="Apple-converted-space"> </span>);</p>
+<p class="p2">}</p>
+<p class="p2">function choose(i) {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>selected=i;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>renderTabs();</p>
+<p class="p2"><span class="Apple-converted-space"> </span>renderCalculator();</p>
+<p class="p2"><span class="Apple-converted-space"> </span>reset();</p>
+<p class="p2">}</p>
+<p class="p2">function renderCalculator() {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>const c=calculators[selected];</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("numberLabel").textContent="CALCULATOR "+(selected+1);</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("calcTitle").textContent=c.title;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("rules").textContent=c.rules;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("memory").hidden=!c.memory;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("buttons").innerHTML=c.buttons.map(([name,label])=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>`&lt;button class="op" data-button="${name}"&gt;${name}&lt;small&gt;${label}&lt;/small&gt;&lt;/button&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>).join("");</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("buttons").querySelectorAll("button").forEach(b=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>b.addEventListener("click",()=&gt;press(b.dataset.button))</p>
+<p class="p2"><span class="Apple-converted-space"> </span>);</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("challenges").innerHTML=c.challenges.map(q=&gt;`&lt;li&gt;${q}&lt;/li&gt;`).join("");</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("teacherNotes").innerHTML=c.teacher;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("target").value=[20,102,99,2,55][selected];</p>
+<p class="p2">}</p>
+<p class="p2">function press(name) {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>states.push(snapshot());</p>
+<p class="p2"><span class="Apple-converted-space"> </span>const old=value;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>let message="";</p>
+<p class="p2"><span class="Apple-converted-space"> </span>if(selected===0) value+=name==="A"?3:7;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>else if(selected===1) value=name==="A"?value+1:value*3;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>else if(selected===2) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if(name==="A") value+=6;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>else if(name==="B") {</p>
+<p class="p2"><span class="Apple-converted-space">   </span>if(value%2===0) value/=2;</p>
+<p class="p2"><span class="Apple-converted-space">   </span>else message="No effect: the display is odd.";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p2"><span class="Apple-converted-space">   </span>if(value%3===0) value/=3;</p>
+<p class="p2"><span class="Apple-converted-space">   </span>else message="No effect: the display is not divisible by 3.";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><span class="Apple-converted-space"> </span>} else if(selected===3) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if(name==="A") value+=5;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>else if(name==="B") value+=7;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>else {</p>
+<p class="p2"><span class="Apple-converted-space">   </span>const r=Math.sqrt(value);</p>
+<p class="p2"><span class="Apple-converted-space">   </span>if(Number.isInteger(r)) value=r;</p>
+<p class="p2"><span class="Apple-converted-space">   </span>else message="No effect: the display is not a perfect square.";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><span class="Apple-converted-space"> </span>} else {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const oldAlpha=alpha;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if(name==="A") value+=alpha;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>else value+=alpha+beta;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>alpha=old;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>beta=oldAlpha;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>}</p>
+<p class="p2"><span class="Apple-converted-space"> </span>history.push({name,from:old,to:value,message});</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("status").textContent=message||`${name} pressed: ${fmt(old)} → ${fmt(value)}.`;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>render();</p>
+<p class="p2">}</p>
+<p class="p2">function render() {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("display").textContent=fmt(value);</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("alpha").textContent=fmt(alpha);</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("beta").textContent=fmt(beta);</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("history").innerHTML=history.length?history.map((h,i)=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>`&lt;div class="step"&gt;&lt;span&gt;${i+1}. Button ${h.name}${h.message?" · no effect":""}&lt;/span&gt;&lt;strong&gt;${fmt(h.to)}&lt;/strong&gt;&lt;/div&gt;`</p>
+<p class="p2"><span class="Apple-converted-space"> </span>).join(""):'&lt;p class="muted"&gt;No buttons pressed yet.&lt;/p&gt;';</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("undo").disabled=history.length===0;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("targetResult").textContent="";</p>
+<p class="p2">}</p>
+<p class="p2">function reset() {</p>
+<p class="p2"><span class="Apple-converted-space"> </span>value=calculators[selected].start;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>alpha=0; beta=0; history=[]; states=[];</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("status").textContent="Ready! Press a button to begin.";</p>
+<p class="p2"><span class="Apple-converted-space"> </span>render();</p>
+<p class="p2">}</p>
+<p class="p2">$("undo").addEventListener("click",()=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space"> </span>if(!states.length)return;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>const s=states.pop();</p>
+<p class="p2"><span class="Apple-converted-space"> </span>value=s.value; alpha=s.alpha; beta=s.beta; history=s.history;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>$("status").textContent="Last press undone.";</p>
+<p class="p2"><span class="Apple-converted-space"> </span>render();</p>
+<p class="p2">});</p>
+<p class="p2">$("reset").addEventListener("click",reset);</p>
+<p class="p2">$("copy").addEventListener("click",async()=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space"> </span>const seq=history.map(h=&gt;h.name).join("");</p>
+<p class="p2"><span class="Apple-converted-space"> </span>try {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>await navigator.clipboard.writeText(seq||"(no presses)");</p>
+<p class="p2"><span class="Apple-converted-space">  </span>$("status").textContent="Sequence copied: "+(seq||"(no presses)");</p>
+<p class="p2"><span class="Apple-converted-space"> </span>} catch {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>$("status").textContent="Your sequence: "+(seq||"(no presses)");</p>
+<p class="p2"><span class="Apple-converted-space"> </span>}</p>
+<p class="p2">});</p>
+<p class="p2">$("checkTarget").addEventListener("click",()=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space"> </span>const target=Number($("target").value);</p>
+<p class="p2"><span class="Apple-converted-space"> </span>if(!Number.isSafeInteger(target)) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>$("targetResult").textContent="Enter a whole-number target.";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>return;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>}</p>
+<p class="p2"><span class="Apple-converted-space"> </span>if(value===target) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>$("targetResult").textContent=`Target reached in ${history.length} press${history.length===1?"":"es"}! Can you do it in fewer?`;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>} else {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>$("targetResult").textContent=`Current display: ${value}. Target: ${target}. Keep experimenting!`;</p>
+<p class="p2"><span class="Apple-converted-space"> </span>}</p>
+<p class="p2">});</p>
+<p class="p2">renderTabs();</p>
+<p class="p2">renderCalculator();</p>
+<p class="p2">reset();</p>
+<p class="p2">&lt;/script&gt;</p>
+<p class="p2">&lt;/body&gt;</p>
+<p class="p2">&lt;/html&gt;</p>
+</body>
+</html>
