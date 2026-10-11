@@ -2,51 +2,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Website Test</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4ff;
-      text-align: center;
-      padding: 50px 20px;
-    }
-    .card {
-      background: white;
-      max-width: 500px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 4px 20px #0001;
-    }
-    h1 { color: #315efb; }
-    button {
-      background: #315efb;
-      color: white;
-      border: none;
-      padding: 14px 24px;
-      border-radius: 10px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Broken Calculator Lab</title>
+<style>
+:root{--navy:#172b4d;--blue:#315efb;--paper:#f5f7fb;--muted:#68758b;--line:#dfe5ef}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--navy);font-family:system-ui,Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer}
+header{background:var(--navy);color:white;padding:25px max(20px,calc((100% - 1080px)/2))}
+header h1{margin:7px 0;font-size:clamp(28px,5vw,40px)}
+header p{color:#d6dfef;line-height:1.6;margin:0}
+.brand{color:#a9c3ff;font-size:12px;letter-spacing:2px;font-weight:800}
+main{max-width:1080px;margin:auto;padding:24px 16px 45px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab,.secondary{border:1px solid var(--line);background:white;color:var(--navy);border-radius:10px;padding:10px 14px;font-weight:750}
+.tab.active,.primary{background:var(--blue);color:white;border-color:var(--blue)}
+.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:18px}
+.panel{background:white;border:1px solid var(--line);border-radius:17px;padding:21px;min-width:0}
+h2{font-size:23px;margin:12px 0 5px}
+h3{margin:0 0 9px;font-size:17px}
+.muted{color:var(--muted);line-height:1.6}
+.pill{display:inline-block;background:#edf1ff;color:#294bd0;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:800}
+.screen{background:#e8f5ee;border:2px solid #c6e5d4;border-radius:13px;padding:17px;text-align:right;margin:18px 0 12px}
+.screen-label{font-size:11px;letter-spacing:1.5px;color:#44705a}
+#display{font-size:clamp(36px,6vw,54px);font-weight:850;color:#165a39;overflow-wrap:anywhere}
+.memory{display:flex;gap:10px;margin:12px 0}
+.memory-card{flex:1;background:#f1f5ff;padding:12px;border-radius:10px;min-width:0}
+.memory-card small{display:block;color:var(--muted);font-weight:700}
+.memory-card strong{font-size:23px;overflow-wrap:anywhere}
+.buttons{display:flex;gap:10px;margin:17px 0}
+.op{flex:1;min-width:0;min-height:85px;border:0;border-radius:13px;background:#dce7ff;color:#173cba;font-size:25px;font-weight:850}
+.op:nth-child(2){background:#ffebcb;color:#854800}
+.op:nth-child(3){background:#d9f3eb;color:#086b58}
+.op small{display:block;font-size:13px;margin-top:5px}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.secondary,.primary{padding:9px 12px}
+.primary{border:0;border-radius:9px;font-weight:750}
+.notice{background:#f0f7ff;padding:12px;border-radius:10px;font-size:13px;line-height:1.5;margin-top:14px}
+.section-label{font-size:11px;letter-spacing:1.4px;font-weight:850;color:var(--muted)}
+.history{max-height:240px;overflow:auto;margin-top:10px}
+.step{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #edf0f5;font-size:14px}
+.step strong{text-align:right;overflow-wrap:anywhere}
+.challenge{background:#fff6e8;border:1px solid #f7dfb9;border-radius:13px;padding:15px;margin-top:18px}
+.target-row{display:flex;gap:8px;margin-top:12px}
+.target-row input{width:100%;min-width:0;border:1px solid #d9c8a9;border-radius:9px;padding:10px}
+.result{font-weight:750;line-height:1.5;margin-top:10px}
+ol{padding-left:22px;line-height:1.8}
+details{margin-top:15px;padding:15px;background:white;border:1px solid var(--line);border-radius:13px}
+summary{font-weight:800;cursor:pointer}
+details p,details li{line-height:1.65}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:25px}
+@media(max-width:740px){.layout{grid-template-columns:1fr}.panel{padding:16px}header{padding:22px 18px}.tab{flex:1}}
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>It works!</h1>
-    <p>My website is running correctly.</p>
-    <p>Welcome to the Broken Calculator Lab test.</p>
-    <h2 id="number">0</h2>
-    <button onclick="addThree()">Add 3</button>
-  </div>
+<header>
+ <div class="brand">MATH CIRCLE · INTERACTIVE EXPLORATION</div>
+ <h1>Broken Calculator Lab</h1>
+ <p>Five calculators. A handful of working buttons. Endless mathematical questions. Experiment, discover patterns, and prove your ideas.</p>
+</header>
+<main>
+ <div class="tabs" id="tabs"></div>
+ <div class="layout">
+  <section class="panel">
+   <span class="pill" id="numberLabel"></span>
+   <h2 id="calcTitle"></h2>
+   <p class="muted" id="rules"></p>
+   <div class="screen" aria-live="polite">
+    <div class="screen-label">CURRENT DISPLAY</div>
+    <div id="display">0</div>
+   </div>
+   <div class="memory" id="memory" hidden>
+    <div class="memory-card"><small>ALPHA · PREVIOUS DISPLAY</small><strong id="alpha">0</strong></div>
+    <div class="memory-card"><small>BETA · TWO STEPS BACK</small><strong id="beta">0</strong></div>
+   </div>
+   <div class="buttons" id="buttons"></div>
+   <div class="controls">
+    <button class="secondary" id="undo">↶ Undo</button>
+    <button class="secondary" id="reset">↺ Reset</button>
+    <button class="secondary" id="copy">Copy sequence</button>
+   </div>
+   <div class="notice" id="status" aria-live="polite">Ready! Press a button to begin.</div>
+   <div style="margin-top:24px">
+    <div class="section-label">BUTTON SEQUENCE &amp; HISTORY</div>
+    <div class="history" id="history"></div>
+   </div>
+  </section>
+  <aside>
+   <section class="panel">
+    <div class="section-label">YOUR INVESTIGATION</div>
+    <h2>Challenge board</h2>
+    <p class="muted">Experiment first. Write down conjectures before opening the teacher notes.</p>
+    <ol id="challenges"></ol>
+    <div class="challenge">
+     <h3>🎯 Reach a target</h3>
+     <p class="muted">Enter a whole number. The checker tells you whether your current display matches it.</p>
+     <div class="target-row">
+      <input id="target" type="number" step="1" value="20" aria-label="Target number">
+      <button class="primary" id="checkTarget">Check</button>
+     </div>
+     <div class="result" id="targetResult" aria-live="polite"></div>
+    </div>
+   </section>
+   <details>
+    <summary>Teacher notes &amp; answer key</summary>
+    <div id="teacherNotes"></div>
+   </details>
+   <details>
+    <summary>Ideas for further exploration</summary>
+    <ul>
+     <li>Can you prove that your list of impossible numbers is complete?</li>
+     <li>Can you find the shortest sequence without trying every possibility?</li>
+     <li>What changes if the starting display is different?</li>
+     <li>Can you design a calculator with infinitely many unreachable numbers?</li>
+     <li>Can you invent a calculator and challenge another student?</li>
+    </ul>
+   </details>
+  </aside>
+ </div>
+ <div class="footer">BROKEN CALCULATOR LAB · EXPERIMENT · CONJECTURE · PROVE</div>
+</main>
+<script>
+const calculators=[
+{
+ title:"Add 3 or 7",start:0,
+ rules:"A adds 3. B adds 7. Start at 0.",
+ buttons:[["A","+3"],["B","+7"]],
+ challenges:[
+  "Show that ABAB displays 20. What does ABBA display?",
+  "Why can you never display 8?",
+  "What other positive integers are impossible?",
+  "Find the largest positive integer you cannot display."
+ ],
+ teacher:`<p><b>Answers:</b> ABAB and ABBA both display 20. Every display has the form 3a + 7b, where a and b are nonnegative integers. The impossible positive integers are 1, 2, 4, 5, 8, and 11. The largest is 11.</p>`
+},
+{
+ title:"Add 1 or multiply by 3",start:0,
+ rules:"A adds 1. B multiplies the display by 3. Start at 0.",
+ buttons:[["A","+1"],["B","×3"]],
+ challenges:[
+  "What does ABBAAAA display?",
+  "Find a shorter sequence that gives the same result.",
+  "Reach 102 using as few presses as possible.",
+  "Reach 511 using as few presses as possible."
+ ],
+ teacher:`<p><b>ABBAAAA:</b> 0 → 1 → 3 → 9 → 10 → 11 → 12 → 13.</p><p><b>Shorter sequence:</b> ABABA gives 0 → 1 → 3 → 4 → 12 → 13.</p><p><b>102 in 8 presses:</b> AAB BBAAB? To avoid ambiguity, a verified sequence is <b>ABBAABAB</b>: students should test sequences with the calculator and prove minimality by working backward from 102, reversing multiplication only when divisible by 3.</p><p><b>511 in 12 presses:</b> AABBB AAB AABA (ignore spaces): A,A,B,B,B,A,A,B,A,A,B,A. This gives 0 → 1 → 2 → 6 → 18 → 54 → 55 → 56 → 168 → 169 → 170 → 510 → 511. Work backward to prove no shorter sequence exists.</p>`
+},
+{
+ title:"Add 6, divide by 2 or 3",start:0,
+ rules:"A adds 6. B divides by 2 when the display is even; otherwise B has no effect. C divides by 3 when the display is divisible by 3; otherwise C has no effect. Start at 0.",
+ buttons:[["A","+6"],["B","÷2"],["C","÷3"]],
+ challenges:[
+  "Can you display every positive integer? Start with small targets.",
+  "Find sequences that display 1, 2, and 3.",
+  "Find the smallest number of presses needed to display 99.",
+  "Explain why an ineffective division does not change the display."
+ ],
+ teacher:`<p><b>Every positive integer n is reachable:</b> press A exactly n times to reach 6n. Press B to get 3n, then C to get n. This gives a construction in n + 2 presses.</p><p><b>99 in 18 presses:</b> A, B, then A sixteen times. The display goes 0 → 6 → 3 → 9 → 15 → … → 99. For minimality, work backward using reverse moves: subtract 6, multiply by 2, or multiply by 3. A shortest backward path is 99 → 93 → … → 3 → 6 → 0, using 18 moves.</p>`
+},
+{
+ title:"Add 5, add 7 or take a square root",start:0,
+ rules:"A adds 5. B adds 7. C takes the square root if the display is a perfect square; otherwise C has no effect. Start at 0.",
+ buttons:[["A","+5"],["B","+7"],["C","√"]],
+ challenges:[
+  "Build the smallest positive targets, starting with 2.",
+  "Find ways to display 2, 3, 4, 5, and 6.",
+  "Can you display every integer greater than 1?",
+  "Find a general construction and explain why it works."
+ ],
+ teacher:`<p><b>Proof idea:</b> every integer greater than or equal to 24 can be written as 5a + 7b for nonnegative integers a,b. Given any target n > 1, choose k large enough that n^(2^k) ≥ 24. Build that number using A and B, then press C exactly k times to reach n. This proves every integer greater than 1 is reachable.</p>`
+},
+{
+ title:"The memory calculator",start:1,memory:true,
+ rules:"Start at 1, with Alpha = 0 and Beta = 0. A adds Alpha to the display. B adds Alpha + Beta. After each press, Alpha becomes the previous display and Beta becomes the previous Alpha.",
+ buttons:[["A","+ Alpha"],["B","+ Alpha + Beta"]],
+ challenges:[
+  "What happens after one, two, and three A presses?",
+  "Write the first ten displayed values when you keep pressing A.",
+  "Write the first ten displayed values when you keep pressing B.",
+  "Can this calculator display every positive integer?"
+ ],
+ teacher:`<p><b>Repeated A:</b> 1, 1, 2, 3, 5, 8, 13, 21, 34, 55. This is the Fibonacci sequence, including the initial display.</p><p><b>Repeated B:</b> 1, 1, 2, 4, 7, 13, 24, 44, 81, 149. Each new display adds the previous two memory values to the current display.</p><p>For mixed A and B presses, investigate which positive integers can be reached. Compare your conjectures with examples and look for a proof.</p>`
+}
+];
 
-  <script>
-    let number = 0;
-    function addThree() {
-      number += 3;
-      document.getElementById("number").textContent = number;
-    }
-  </script>
+let selected=0,value=0,alpha=0,beta=0,history=[],states=[];
+const $=id=>document.getElementById(id);
+const fmt=n=>String(n);
+
+function snapshot(){return {value,alpha,beta,history:history.slice()};}
+
+function renderTabs(){
+ $("tabs").innerHTML=calculators.map((c,i)=>
+  `<button class="tab ${i===selected?"active":""}" data-i="${i}">Calculator ${i+1}</button>`
+ ).join("");
+ $("tabs").querySelectorAll("button").forEach(b=>
+  b.addEventListener("click",()=>choose(Number(b.dataset.i)))
+ );
+}
+function choose(i){
+ selected=i;
+ renderTabs();
+ renderCalculator();
+ reset();
+}
+function renderCalculator(){
+ const c=calculators[selected];
+ $("numberLabel").textContent="CALCULATOR "+(selected+1);
+ $("calcTitle").textContent=c.title;
+ $("rules").textContent=c.rules;
+ $("memory").hidden=!c.memory;
+ $("buttons").innerHTML=c.buttons.map(([name,label])=>
+  `<button class="op" data-button="${name}">${name}<small>${label}</small></button>`
+ ).join("");
+ $("buttons").querySelectorAll("button").forEach(b=>
+  b.addEventListener("click",()=>press(b.dataset.button))
+ );
+ $("challenges").innerHTML=c.challenges.map(q=>`<li>${q}</li>`).join("");
+ $("teacherNotes").innerHTML=c.teacher;
+ $("target").value=[20,102,99,2,55][selected];
+}
+function press(name){
+ states.push(snapshot());
+ const old=value;
+ let message="";
+ if(selected===0){
+  value+=name==="A"?3:7;
+ }else if(selected===1){
+  value=name==="A"?value+1:value*3;
+ }else if(selected===2){
+  if(name==="A") value+=6;
+  else if(name==="B"){
+   if(value%2===0)value/=2;
+   else message="No effect: the display is odd.";
+  }else{
+   if(value%3===0)value/=3;
+   else message="No effect: the display is not divisible by 3.";
+  }
+ }else if(selected===3){
+  if(name==="A")value+=5;
+  else if(name==="B")value+=7;
+  else{
+   const r=Math.sqrt(value);
+   if(Number.isInteger(r))value=r;
+   else message="No effect: the display is not a perfect square.";
+  }
+ }else{
+  const oldAlpha=alpha;
+  if(name==="A")value+=alpha;
+  else value+=alpha+beta;
+  alpha=old;
+  beta=oldAlpha;
+ }
+ history.push({name,from:old,to:value,message});
+ $("status").textContent=message||`Button ${name}: ${fmt(old)} → ${fmt(value)}.`;
+ render();
+}
+function render(){
+ $("display").textContent=fmt(value);
+ $("alpha").textContent=fmt(alpha);
+ $("beta").textContent=fmt(beta);
+ $("history").innerHTML=history.length?
+  history.map((h,i)=>`<div class="step"><span>${i+1}. Button ${h.name}${h.message?" · no effect":""}</span><strong>${fmt(h.to)}</strong></div>`).join("")
+  :'<p class="muted">No buttons pressed yet.</p>';
+ $("undo").disabled=history.length===0;
+ $("targetResult").textContent="";
+}
+function reset(){
+ value=calculators[selected].start;
+ alpha=0;beta=0;history=[];states=[];
+ $("status").textContent="Ready! Press a button to begin.";
+ render();
+}
+$("undo").addEventListener("click",()=>{
+ if(!states.length)return;
+ const s=states.pop();
+ value=s.value;alpha=s.alpha;beta=s.beta;history=s.history;
+ $("status").textContent="Last press undone.";
+ render();
+});
+$("reset").addEventListener("click",reset);
+$("copy").addEventListener("click",async()=>{
+ const seq=history.map(h=>h.name).join("");
+ try{
+  await navigator.clipboard.writeText(seq||"(no presses)");
+  $("status").textContent="Copied sequence: "+(seq||"(no presses)");
+ }catch{
+  $("status").textContent="Sequence: "+(seq||"(no presses)");
+ }
+});
+$("checkTarget").addEventListener("click",()=>{
+ const raw=$("target").value;
+ const target=Number(raw);
+ if(raw.trim()===""||!Number.isSafeInteger(target)){
+  $("targetResult").textContent="Please enter a whole-number target.";
+  return;
+ }
+ $("targetResult").textContent=value===target?
+  `Target reached in ${history.length} press(es)! Can you find a shorter sequence?`:
+  `Current display: ${value}. Target: ${target}. Keep experimenting!`;
+});
+renderTabs();
+renderCalculator();
+reset();
+</script>
 </body>
 </html>
